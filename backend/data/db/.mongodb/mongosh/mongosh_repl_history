@@ -1,0 +1,17 @@
+db.users.find()
+show collections
+use subscribers
+show collections
+exit
+q
+db.users.find()
+db.users.drop()
+db.users.remove()
+db.users.find()
+db.users.findAll()
+show collections
+db.User.findAll()
+db.User.find()
+db.Users.find()
+db.Users.findAll()
+use subscribers
