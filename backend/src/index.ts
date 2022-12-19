@@ -3,11 +3,24 @@ dotenv.config();
 
 import mongoose, { connect } from 'mongoose';
 import express, { Router } from 'express';
+import { createServer } from "http";
+import { WebSocketServer } from 'ws';
 
 import UserController from "./controllers/UserController";
 import { authToken } from "./middlewares";
 
 const app = express();
+const server = createServer(app);
+
+const wss = new WebSocketServer({ server });
+
+wss.on('connection', ws => {
+  console.log('A new client connected');
+
+  ws.on('message', msg => {
+    console.log('new message: ', msg);
+  });
+});
 
 run().catch(err => console.log(err));
 
@@ -32,5 +45,5 @@ routes.get('/users', UserController.find);
 
 app.use(routes);
 
-app.listen(3000);
+server.listen(3000);
 
