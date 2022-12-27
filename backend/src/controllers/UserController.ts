@@ -17,15 +17,27 @@ export = {
         password: hashedPassword
       });
 
-      await user.save();
+      const savedUser = await user.save();
 
-      const token = createToken(body);
+      const token = createToken({ id: savedUser._id.toString() });
 
       return res.json({ token });
     } catch (e) {
       console.error(e);
       return res.status(500).send();
     }
+  },
+  async info(req: Request, res: Response) {
+    try {
+      const user = await User.findOne({ _id: (req as any).id });
+
+      if(user) {
+        return res.json({name: user.name, id: user._id});
+      }
+    } catch (e) {
+      console.error(e);
+    }
+    return res.status(500).send();
   },
   async find(req: Request, res: Response) {
     try {
@@ -44,7 +56,7 @@ export = {
       }
 
       if(await compare(body.password, user.password)) {
-        const token = createToken(body);
+        const token = createToken({ id: user._id.toString() });
 
         return res.json({ token });
       }
@@ -56,9 +68,9 @@ export = {
   }
 };
 
-function createToken(user: IUser) {
+function createToken(data: {id: string}) {
   if(!process.env.ACCESS_TOKEN_SECRET) {
     throw 'Missing config ACCESS_TOKEN_SECRET';
   }
-  return sign(user, process.env.ACCESS_TOKEN_SECRET);
+  return sign(data, process.env.ACCESS_TOKEN_SECRET);
 }

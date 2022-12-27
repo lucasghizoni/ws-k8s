@@ -1,19 +1,17 @@
 import { Request, Response, NextFunction } from 'express';
 import { verify } from "jsonwebtoken";
 
-export function authToken(req: Request, res: Response, next: NextFunction) {
+export function authTokenMiddleware(req: Request, res: Response, next: NextFunction) {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
 
-  if(!token) return res.sendStatus(401);
+  if(!token || !process.env.ACCESS_TOKEN_SECRET) return res.sendStatus(401);
 
-  if(!process.env.ACCESS_TOKEN_SECRET) {
-    console.error('Missing ACCESS_TOKEN_SECRET');
-    return res.sendStatus(500);
-  }
+  verify(token, process.env.ACCESS_TOKEN_SECRET, (error, payload) => {
+    if(error) return res.sendStatus(403);
+    const { id } = payload as { id: string };
 
-  verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-    if(err) return res.sendStatus(403);
+    (req as any).id = id;
     next();
   });
 }
