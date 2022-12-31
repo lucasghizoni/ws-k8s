@@ -1,5 +1,8 @@
 import dotenv from 'dotenv';
-dotenv.config();
+
+if(process.env.NODE_ENV === 'development') {
+  dotenv.config();
+}
 
 import mongoose, { connect } from 'mongoose';
 import { createServer } from "http";
@@ -14,7 +17,9 @@ run().catch(err => console.log(err));
 
 async function run() {
   mongoose.set('strictQuery', true);
-  await connect('mongodb://localhost:27017/subscribers');
+  await connect(
+    `mongodb://${process.env.MONGODB_ADMINUSERNAME}:${process.env.MONGODB_ADMINPASSWORD}@${process.env.MONGODB_SERVER}/subscribers?authSource=admin`
+  );
 }
 
 server.listen(3333);

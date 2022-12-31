@@ -4,13 +4,7 @@ import { createClient } from "redis";
 
 const watchers: { [id: string]: WebSocket[] } = {};
 
-const publisher = createClient({
-  socket: {
-    host: 'localhost',
-    port: 6379
-  },
-});
-
+const publisher = createClient({ url: `redis://${process.env.REDIS_SERVER}` });
 const subscriber = publisher.duplicate();
 
 async function run(){

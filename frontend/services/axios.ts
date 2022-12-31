@@ -3,9 +3,8 @@ import { parseCookies } from "nookies";
 import { GetServerSidePropsContext } from "next/types";
 
 export const api = axios.create({
-  baseURL: 'http://localhost:3333'
+  baseURL: process.env.NEXT_PUBLIC_BACKEND_API
 });
-
 
 export function getAPIClient(ctx?: GetServerSidePropsContext) {
   const { 'wsk8s.token': token } = parseCookies(ctx)

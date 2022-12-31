@@ -1,5 +1,5 @@
 import { Response, Request } from 'express';
-import { hash, compare } from 'bcrypt';
+import { hash, compare } from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
 
 import User, { IUser } from '../models/User';
@@ -70,7 +70,7 @@ export = {
 
 function createToken(data: {id: string}) {
   if(!process.env.ACCESS_TOKEN_SECRET) {
-    throw 'Missing config ACCESS_TOKEN_SECRET';
+    throw 'Missing configs ACCESS_TOKEN_SECRET';
   }
   return sign(data, process.env.ACCESS_TOKEN_SECRET);
 }

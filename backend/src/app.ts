@@ -7,19 +7,21 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
-
 const routes = Router();
 
 /* Public routes */
 routes
-  .post('/users', UserController.store)
-  .post('/users/login', UserController.login);
+  .get('/api/alive', (req, res) => {
+    res.send('I am alive!')
+  })
+  .post('/api/users', UserController.store)
+  .post('/api/users/login', UserController.login);
 
 routes.use(authTokenMiddleware);
 
 /* Protected routes */
-routes.get('/user/info', UserController.info);
-routes.get('/users', UserController.find);
+routes.get('/api/user/info', UserController.info);
+routes.get('/api/users', UserController.find);
 
 app.use(routes);
 
